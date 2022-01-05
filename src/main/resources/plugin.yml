@@ -1,0 +1,7 @@
+name: Placeholders
+version: ${project.version}
+main: rip.kaya.placeholders.Placeholders
+api-version: 1.8
+author: kayalust
+description: Custom placeholders plugin
+depend: [PlaceholderAPI]
