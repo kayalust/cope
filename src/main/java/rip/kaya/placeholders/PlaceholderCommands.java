@@ -8,6 +8,7 @@ package rip.kaya.placeholders;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
+import org.bukkit.entity.Player;
 import rip.kaya.placeholders.command.annotation.Command;
 import rip.kaya.placeholders.command.annotation.Sender;
 import rip.kaya.placeholders.utilities.CC;
@@ -37,7 +38,7 @@ public class PlaceholderCommands {
         placeholder.save();
 
         if (sender instanceof ConsoleCommandSender) {
-            sender.sendMessage("&aSuccessfully created the placeholder " + name + "!");
+            sender.sendMessage("Successfully created the placeholder " + name + "!");
             return;
         }
 
@@ -49,10 +50,36 @@ public class PlaceholderCommands {
         name.delete();
 
         if (sender instanceof ConsoleCommandSender) {
-            sender.sendMessage("&aSuccessfully deleted the placeholder " + name + "!");
+            sender.sendMessage("Successfully deleted the placeholder " + name + "!");
             return;
         }
 
         sender.sendMessage(CC.translate("&aSuccessfully deleted the placeholder " + name + "!"));
+    }
+
+    @Command(name = "setdefaultvalue", desc = "Sets the default value of a placeholder", usage = "<name> <value>")
+    public void setDefaultValue(@Sender CommandSender sender, Placeholder name, String value) {
+        name.setDefaultValue(value);
+        name.save();
+
+        if (sender instanceof ConsoleCommandSender) {
+            sender.sendMessage("Successfully set " + name + "'s default value to " + value + "!");
+            return;
+        }
+
+        sender.sendMessage(CC.translate("&aSuccessfully set " + name + "'s default value to " + value + "!"));
+    }
+
+    @Command(name = "setplayervalue", desc = "Sets the player value of a placeholder", usage = "<name> <player> <value>")
+    public void setPlayerValue(@Sender CommandSender sender, Placeholder name, Player player, String value) {
+        name.setValue(player, value);
+        name.save();
+
+        if (sender instanceof ConsoleCommandSender) {
+            sender.sendMessage("Successfully set " + name + "'s value for " + player.getName() + " to " + value + "!");
+            return;
+        }
+
+        sender.sendMessage(CC.translate("&aSuccessfully set " + name + "'s value for " + player.getName() + " to " + value + "!"));
     }
 }
