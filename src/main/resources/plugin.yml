@@ -1,7 +1,7 @@
-name: Placeholders
+name: cope
 version: ${project.version}
 main: rip.kaya.placeholders.Placeholders
 api-version: 1.8
 author: kayalust
-description: Custom placeholders plugin
+description: Custom placeholders plugin lol cope
 depend: [PlaceholderAPI]

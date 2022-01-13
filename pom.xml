@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>rip.kaya</groupId>
-    <artifactId>Placeholders</artifactId>
+    <artifactId>cope</artifactId>
     <version>1.0-SNAPSHOT</version>
 
     <properties>
