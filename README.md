@@ -1,10 +1,10 @@
-# CustomPlaceholders
+# cope
 A custom placeholder plugin that saves placeholders values to a Mongo Database (also per player support!)
 ## Commands
-- `/cp create <name>` - Creates a new placeholder
-- `/cp delete <name>` - Deletes an existing placeholder
-- `/cp setdefaultvalue <name> <value>` - Sets the default value of a specific placeholder
-- `/cp setplayervalue <name> <player> <value>` - Sets the placeholder value of a specific player
+- `/cope create <name>` - Creates a new placeholder
+- `/cope delete <name>` - Deletes an existing placeholder
+- `/cope setdefaultvalue <name> <value>` - Sets the default value of a specific placeholder
+- `/cope setplayervalue <name> <player> <value>` - Sets the placeholder value of a specific player
 ## Dependencies
 * A working MongoDB database (Required)
 * PlaceholderAPI (Required) - https://github.com/PlaceholderAPI/PlaceholderAPI/

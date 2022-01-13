@@ -42,7 +42,7 @@ public class PlaceholderPlugin extends JavaPlugin {
         CommandService drink = Drink.get(this);
 
         drink.bind(Placeholder.class).toProvider(new PlaceholderProvider());
-        drink.register(new PlaceholderCommands(), "cp", "customplaceholders", "customplaceholder");
+        drink.register(new PlaceholderCommands(), "cope", "cp", "customplaceholders", "customplaceholder");
 
         drink.registerCommands();
 
