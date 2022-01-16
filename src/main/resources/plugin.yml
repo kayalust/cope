@@ -1,5 +1,5 @@
 name: cope
-version: ${project.version}
+version: 1.2
 main: rip.kaya.placeholders.PlaceholderPlugin
 author: kayalust
 description: Custom placeholders plugin lol cope
