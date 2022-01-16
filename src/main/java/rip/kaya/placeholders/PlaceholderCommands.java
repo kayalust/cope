@@ -10,6 +10,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import rip.kaya.placeholders.command.annotation.Command;
+import rip.kaya.placeholders.command.annotation.Require;
 import rip.kaya.placeholders.command.annotation.Sender;
 import rip.kaya.placeholders.utilities.CC;
 
@@ -28,6 +29,7 @@ public class PlaceholderCommands {
     );
 
     @Command(name = "", desc = "The main CustomPlaceholders command.")
+    @Require("cp.admin")
     public void sendHelp(@Sender CommandSender sender) {
         helpMessage.forEach(sender::sendMessage);
     }
@@ -46,6 +48,7 @@ public class PlaceholderCommands {
     }
 
     @Command(name = "delete", desc = "Deletes an existing placeholder", usage = "<name>")
+    @Require("cp.admin")
     public void delete(@Sender CommandSender sender, Placeholder name) {
         name.delete();
 
@@ -58,6 +61,7 @@ public class PlaceholderCommands {
     }
 
     @Command(name = "setdefaultvalue", desc = "Sets the default value of a placeholder", usage = "<name> <value>")
+    @Require("cp.admin")
     public void setDefaultValue(@Sender CommandSender sender, Placeholder name, String value) {
         name.setDefaultValue(value);
         name.save();
@@ -71,6 +75,7 @@ public class PlaceholderCommands {
     }
 
     @Command(name = "setplayervalue", desc = "Sets the player value of a placeholder", usage = "<name> <player> <value>")
+    @Require("cp.admin")
     public void setPlayerValue(@Sender CommandSender sender, Placeholder name, Player player, String value) {
         name.setValue(player, value);
         name.save();
