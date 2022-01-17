@@ -50,13 +50,15 @@ public class Placeholder {
             dataDocument.put(entry.getKey().toString(), entry.getValue());
         }
         document.put("data", dataDocument);
-        collection.replaceOne(Filters.eq("_id", name), document, new ReplaceOptions().upsert(true));
+
+        plugin.getMongoManager().getThread().execute(() -> collection.replaceOne(Filters.eq("_id", name), document, new ReplaceOptions().upsert(true)));
+        plugin.getPlaceholderManager().getPlaceholders().add(this);
     }
 
     public void delete() {
         MongoCollection<Document> collection = plugin.getMongoManager().getData();
 
-        collection.findOneAndDelete(Filters.eq("_id", name));
+        plugin.getMongoManager().getThread().execute(() -> collection.findOneAndDelete(Filters.eq("_id", name)));
         plugin.getPlaceholderManager().getPlaceholders().removeIf(p -> p.getName().equals(name));
     }
 

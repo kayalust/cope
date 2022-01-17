@@ -15,6 +15,9 @@ import lombok.RequiredArgsConstructor;
 import org.bson.Document;
 import rip.kaya.placeholders.PlaceholderPlugin;
 
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
+
 @Getter
 @RequiredArgsConstructor
 public class MongoManager {
@@ -26,13 +29,19 @@ public class MongoManager {
 
     private MongoCollection<Document> data;
 
+    private Executor thread;
+
     public void init() {
-        this.client = MongoClients.create(plugin.getConfig().getString("mongo.uri"));
-        this.database = client.getDatabase(plugin.getConfig().getString("mongo.database"));
+        this.thread = Executors.newSingleThreadExecutor();
+
+        thread.execute(() -> {
+            this.client = MongoClients.create(plugin.getConfig().getString("mongo.uri"));
+            this.database = client.getDatabase(plugin.getConfig().getString("mongo.database"));
+        });
 
         plugin.getLogger().info("Successfully initiated a connection to the database!");
 
-        this.loadCollections();
+        thread.execute(this::loadCollections);
 
         plugin.getLogger().info("Successfully retrieved the data collection!");
     }
@@ -48,6 +57,7 @@ public class MongoManager {
             Thread.currentThread().interrupt();
         }
 
+        this.thread = null;
         this.client.close();
     }
 }
