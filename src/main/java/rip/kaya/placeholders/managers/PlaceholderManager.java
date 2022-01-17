@@ -30,7 +30,7 @@ public class PlaceholderManager {
         FindIterable<Document> iterable = plugin.getMongoManager().getData().find();
 
         for (Document document : iterable) {
-            Placeholder placeholder = new Placeholder(document.getString("name"));
+            Placeholder placeholder = new Placeholder(document.getString("_id"));
 
             placeholder.setDefaultValue(document.getString("defaultValue"));
 
