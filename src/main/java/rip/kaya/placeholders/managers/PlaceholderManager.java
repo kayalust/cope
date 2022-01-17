@@ -41,6 +41,7 @@ public class PlaceholderManager {
             }
 
             plugin.getLogger().info("Successfully loaded placeholder " + placeholder.getName() + " with " + dataDocument.size() + " entries");
+            placeholders.add(placeholder);
         }
     }
 
