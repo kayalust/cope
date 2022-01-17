@@ -53,11 +53,11 @@ public class PlaceholderCommands {
         name.delete();
 
         if (sender instanceof ConsoleCommandSender) {
-            sender.sendMessage("Successfully deleted the placeholder " + name + "!");
+            sender.sendMessage("Successfully deleted the placeholder " + name.getName() + "!");
             return;
         }
 
-        sender.sendMessage(CC.translate("&aSuccessfully deleted the placeholder " + name + "!"));
+        sender.sendMessage(CC.translate("&aSuccessfully deleted the placeholder " + name.getName() + "!"));
     }
 
     @Command(name = "setdefaultvalue", desc = "Sets the default value of a placeholder", usage = "<name> <value>")
@@ -67,11 +67,11 @@ public class PlaceholderCommands {
         name.save();
 
         if (sender instanceof ConsoleCommandSender) {
-            sender.sendMessage("Successfully set " + name + "'s default value to " + value + "!");
+            sender.sendMessage("Successfully set " + name.getName() + "'s default value to " + value + "!");
             return;
         }
 
-        sender.sendMessage(CC.translate("&aSuccessfully set " + name + "'s default value to " + value + "!"));
+        sender.sendMessage(CC.translate("&aSuccessfully set " + name.getName() + "'s default value to " + value + "!"));
     }
 
     @Command(name = "setplayervalue", desc = "Sets the player value of a placeholder", usage = "<name> <player> <value>")
@@ -81,10 +81,10 @@ public class PlaceholderCommands {
         name.save();
 
         if (sender instanceof ConsoleCommandSender) {
-            sender.sendMessage("Successfully set " + name + "'s value for " + player.getName() + " to " + value + "!");
+            sender.sendMessage("Successfully set " + name.getName() + "'s value for " + player.getName() + " to " + value + "!");
             return;
         }
 
-        sender.sendMessage(CC.translate("&aSuccessfully set " + name + "'s value for " + player.getName() + " to " + value + "!"));
+        sender.sendMessage(CC.translate("&aSuccessfully set " + name.getName() + "'s value for " + player.getName() + " to " + value + "!"));
     }
 }

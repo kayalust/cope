@@ -15,6 +15,9 @@ import rip.kaya.placeholders.command.Drink;
 import rip.kaya.placeholders.managers.MongoManager;
 import rip.kaya.placeholders.managers.PlaceholderManager;
 
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
+
 @Getter
 public class PlaceholderPlugin extends JavaPlugin {
 
@@ -23,6 +26,8 @@ public class PlaceholderPlugin extends JavaPlugin {
 
     private MongoManager mongoManager;
     private PlaceholderManager placeholderManager;
+
+    private Executor mongoThread;
 
     @Override
     public void onLoad() {
@@ -33,6 +38,8 @@ public class PlaceholderPlugin extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        this.mongoThread = Executors.newSingleThreadExecutor();
+
         this.mongoManager = new MongoManager(this);
         mongoManager.init();
 

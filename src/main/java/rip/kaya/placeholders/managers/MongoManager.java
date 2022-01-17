@@ -29,25 +29,19 @@ public class MongoManager {
 
     private MongoCollection<Document> data;
 
-    private Executor thread;
-
     public void init() {
-        this.thread = Executors.newSingleThreadExecutor();
-
-        thread.execute(() -> {
-            this.client = MongoClients.create(plugin.getConfig().getString("mongo.uri"));
-            this.database = client.getDatabase(plugin.getConfig().getString("mongo.database"));
-        });
+        this.client = MongoClients.create(plugin.getConfig().getString("mongo.uri"));
+        this.database = client.getDatabase(plugin.getConfig().getString("mongo.database"));
 
         plugin.getLogger().info("Successfully initiated a connection to the database!");
 
-        thread.execute(this::loadCollections);
+        this.loadCollections();
 
         plugin.getLogger().info("Successfully retrieved the data collection!");
     }
 
     public void loadCollections() {
-        data = this.database.getCollection("data");
+        this.data = this.database.getCollection("data");
     }
 
     public void shutdown() {
@@ -57,7 +51,6 @@ public class MongoManager {
             Thread.currentThread().interrupt();
         }
 
-        this.thread = null;
         this.client.close();
     }
 }

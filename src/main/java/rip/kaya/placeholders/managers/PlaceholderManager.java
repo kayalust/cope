@@ -27,9 +27,9 @@ public class PlaceholderManager {
     private final List<Placeholder> placeholders = Lists.newArrayList();
 
     public void init() {
-        FindIterable<Document> cursor = plugin.getMongoManager().getData().find();
+        FindIterable<Document> iterable = plugin.getMongoManager().getData().find();
 
-        for (Document document : cursor) {
+        for (Document document : iterable) {
             Placeholder placeholder = new Placeholder(document.getString("name"));
 
             placeholder.setDefaultValue(document.getString("defaultValue"));
@@ -39,6 +39,8 @@ public class PlaceholderManager {
             for (Map.Entry<String, Object> entry : dataDocument.entrySet()) {
                 placeholder.getData().put(UUID.fromString(entry.getKey()), entry.getValue());
             }
+
+            plugin.getLogger().info("Successfully loaded placeholder " + placeholder.getName() + " with " + dataDocument.size() + " entries");
         }
     }
 
