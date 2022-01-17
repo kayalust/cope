@@ -28,27 +28,26 @@ public class Placeholder {
     private String name;
     private Object defaultValue = "defaultValue";
 
-    private List<Player> playersToCheck = Lists.newArrayList();
-
     public Placeholder(String name) {
         this.name = name;
     }
 
     /* Playerdata Map */
-    private final HashMap<UUID, Object> data = Maps.newHashMap();
+    private final HashMap<UUID, String> data = Maps.newHashMap();
 
     public void save() {
         MongoCollection<Document> collection = plugin.getMongoManager().getData();
         Document document = new Document();
 
         document.put("_id", name);
-        document.put("defaultValue", defaultValue);
+        document.put("defaultValue", defaultValue.toString());
 
         Document dataDocument = new Document();
 
-        for (Map.Entry<UUID, Object> entry : data.entrySet()) {
+        for (Map.Entry<UUID, String> entry : data.entrySet()) {
             dataDocument.put(entry.getKey().toString(), entry.getValue());
         }
+
         document.put("data", dataDocument);
 
         plugin.getMongoThread().execute(() -> collection.replaceOne(Filters.eq("_id", name), document, new ReplaceOptions().upsert(true)));
@@ -62,18 +61,23 @@ public class Placeholder {
         plugin.getPlaceholderManager().getPlaceholders().removeIf(p -> p.getName().equals(name));
     }
 
-    public void setValue(Player player, Object value) {
-        data.replace(player.getUniqueId(), value);
+    public void setValue(Player player, String value) {
+        if (data.containsKey(player.getUniqueId())) {
+            data.replace(player.getUniqueId(), value);
+        } else {
+            data.put(player.getUniqueId(), value);
+        }
+
         this.save();
     }
 
-    public Object getPlayerValue(Player player) {
+    public String getPlayerValue(Player player) {
         return data.get(player.getUniqueId());
     }
 
     public String getToDisplay(Player player) {
-        if (playersToCheck.contains(player)) {
-            return this.getPlayerValue(player).toString();
+        if (data.containsKey(player.getUniqueId())) {
+            return this.getPlayerValue(player);
         } else {
             return defaultValue.toString();
         }

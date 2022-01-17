@@ -78,7 +78,6 @@ public class PlaceholderCommands {
     @Require("cp.admin")
     public void setPlayerValue(@Sender CommandSender sender, Placeholder name, Player player, String value) {
         name.setValue(player, value);
-        name.save();
 
         if (sender instanceof ConsoleCommandSender) {
             sender.sendMessage("Successfully set " + name.getName() + "'s value for " + player.getName() + " to " + value + "!");
@@ -86,5 +85,75 @@ public class PlaceholderCommands {
         }
 
         sender.sendMessage(CC.translate("&aSuccessfully set " + name.getName() + "'s value for " + player.getName() + " to " + value + "!"));
+    }
+
+    @Command(name = "addplayervalue", aliases = "add", desc = "Adds a value to a player of a placeholder", usage = "<player> <name> <value>")
+    @Require("cp.admin")
+    public void addPlayerValue(@Sender Player sender, Player player, Placeholder name, String value) {
+        if (!isNumeric(value)) {
+            if (sender instanceof ConsoleCommandSender) {
+                sender.sendMessage(CC.translate("&cThat is not a number!"));
+            } else {
+                sender.sendMessage(CC.translate("&cThat is not a number!"));
+            }
+            return;
+        }
+
+        int i = Integer.parseInt(value);
+        name.setValue(player, String.valueOf(Integer.parseInt(name.getPlayerValue(player)) + i));
+
+        if (sender instanceof ConsoleCommandSender) {
+            sender.sendMessage("Successfully added " + name.getName() + "'s value for " + player.getName() + " to " + value + "!");
+            return;
+        }
+
+        sender.sendMessage(CC.translate("&aSuccessfully added " + name.getName() + "'s value for " + player.getName() + " to " + value + "!"));
+    }
+
+    @Command(name = "removeplayervalue", aliases = "remove", desc = "Removes a value to a player of a placeholder", usage = "<player> <name> <value>")
+    @Require("cp.admin")
+    public void removePlayerValue(@Sender Player sender, Player player, Placeholder name, String value) {
+        if (!isNumeric(value)) {
+            if (sender instanceof ConsoleCommandSender) {
+                sender.sendMessage(CC.translate("&cThat is not a number!"));
+            } else {
+                sender.sendMessage(CC.translate("&cThat is not a number!"));
+            }
+            return;
+        }
+
+        int i = Integer.parseInt(value);
+        name.setValue(player, String.valueOf(Integer.parseInt(name.getPlayerValue(player)) - i));
+
+        if (sender instanceof ConsoleCommandSender) {
+            sender.sendMessage("Successfully removed " + name.getName() + "'s value for " + player.getName() + " to " + value + "!");
+            return;
+        }
+
+        sender.sendMessage(CC.translate("&aSuccessfully removed " + name.getName() + "'s value for " + player.getName() + " to " + value + "!"));
+    }
+
+    @Command(name = "viewvalue", desc = "Views a player placeholder value", usage = "<name> <player>")
+    @Require("cp.admin")
+    public void viewValue(@Sender Player sender, Placeholder name, Player player) {
+        sender.sendMessage(CC.translate("&aValue is " + name.getToDisplay(player)) + " for " + player.getName());
+    }
+
+    public static boolean isNumeric(String string) {
+
+        System.out.printf("Parsing string: \"%s\"%n", string);
+
+        if(string == null || string.equals("")) {
+            PlaceholderPlugin.getInstance().getLogger().info("String cannot be parsed, it is null or empty.");
+            return false;
+        }
+
+        try {
+            Integer.parseInt(string);
+        } catch (NumberFormatException e) {
+            PlaceholderPlugin.getInstance().getLogger().info("Input String cannot be parsed to Integer.");
+            return false;
+        }
+        return true;
     }
 }

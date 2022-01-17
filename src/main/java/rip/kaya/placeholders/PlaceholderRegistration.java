@@ -6,16 +6,14 @@ package rip.kaya.placeholders;
     วันที่: 1/5/2022
 */
 
+import lombok.RequiredArgsConstructor;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.entity.Player;
 
+@RequiredArgsConstructor
 public class PlaceholderRegistration extends PlaceholderExpansion {
 
     private final PlaceholderPlugin plugin;
-
-    public PlaceholderRegistration(PlaceholderPlugin plugin) {
-        this.plugin = plugin;
-    }
 
     @Override
     public String getIdentifier() {

@@ -37,7 +37,7 @@ public class PlaceholderManager {
             Document dataDocument = (Document) document.get("data");
 
             for (Map.Entry<String, Object> entry : dataDocument.entrySet()) {
-                placeholder.getData().put(UUID.fromString(entry.getKey()), entry.getValue());
+                placeholder.getData().put(UUID.fromString(entry.getKey()), entry.getValue().toString());
             }
 
             plugin.getLogger().info("Successfully loaded placeholder " + placeholder.getName() + " with " + dataDocument.size() + " entries");

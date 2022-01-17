@@ -53,8 +53,9 @@ public class PlaceholderPlugin extends JavaPlugin {
 
         drink.registerCommands();
 
-        PluginManager pluginManager = Bukkit.getPluginManager();
-        pluginManager.registerEvents(new PlaceholderListener(), this);
+        if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
+            new PlaceholderRegistration(this).register();
+        }
     }
 
     @Override
