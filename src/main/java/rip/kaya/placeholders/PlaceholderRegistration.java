@@ -9,6 +9,7 @@ package rip.kaya.placeholders;
 import lombok.RequiredArgsConstructor;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 @RequiredArgsConstructor
 public class PlaceholderRegistration extends PlaceholderExpansion {
@@ -16,17 +17,17 @@ public class PlaceholderRegistration extends PlaceholderExpansion {
     private final PlaceholderPlugin plugin;
 
     @Override
-    public String getIdentifier() {
+    public @NotNull String getIdentifier() {
         return "cp";
     }
 
     @Override
-    public String getAuthor() {
+    public @NotNull String getAuthor() {
         return "kayalust";
     }
 
     @Override
-    public String getVersion() {
+    public @NotNull String getVersion() {
         return plugin.getDescription().getVersion();
     }
 

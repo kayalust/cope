@@ -52,6 +52,6 @@ public class PlaceholderProvider extends DrinkProvider<Placeholder> {
     @Override
     public List<String> getSuggestions(@NotNull String prefix) {
         String fp = prefix.toLowerCase();
-        return plugin.getPlaceholderManager().getPlaceholders().stream().map(Placeholder::getName).filter(s -> fp.length() == 0 || s.startsWith(fp)).collect(Collectors.toList());
+        return plugin.getPlaceholderManager().getPlaceholders().values().stream().map(Placeholder::getName).filter(s -> fp.length() == 0 || s.startsWith(fp)).collect(Collectors.toList());
     }
 }
