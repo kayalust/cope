@@ -89,14 +89,15 @@ public class PlaceholderCommands {
 
     @Command(name = "addplayervalue", aliases = "add", desc = "Adds a value to a player of a placeholder", usage = "<player> <name> <value>")
     @Require("cp.admin")
-    public void addPlayerValue(@Sender Player sender, Player player, Placeholder name, String value) {
+    public void addPlayerValue(@Sender CommandSender sender, Player player, Placeholder name, String value) {
         if (!isNumeric(value)) {
             if (sender instanceof ConsoleCommandSender) {
                 sender.sendMessage(CC.translate("&cThat is not a number!"));
+                return;
             } else {
                 sender.sendMessage(CC.translate("&cThat is not a number!"));
+                return;
             }
-            return;
         }
 
         int i = Integer.parseInt(value);
@@ -112,17 +113,24 @@ public class PlaceholderCommands {
 
     @Command(name = "removeplayervalue", aliases = "remove", desc = "Removes a value to a player of a placeholder", usage = "<player> <name> <value>")
     @Require("cp.admin")
-    public void removePlayerValue(@Sender Player sender, Player player, Placeholder name, String value) {
+    public void removePlayerValue(@Sender CommandSender sender, Player player, Placeholder name, String value) {
         if (!isNumeric(value)) {
             if (sender instanceof ConsoleCommandSender) {
-                sender.sendMessage(CC.translate("&cThat is not a number!"));
+                sender.sendMessage("That is not a number!");
+                return;
             } else {
                 sender.sendMessage(CC.translate("&cThat is not a number!"));
+                return;
             }
-            return;
         }
 
         int i = Integer.parseInt(value);
+
+        if ((Integer.parseInt(name.getPlayerValue(player)) - i) <= 0) {
+            sender.sendMessage("not setting player balance cuz theyre broke lol cope");
+            return;
+        }
+
         name.setValue(player, String.valueOf(Integer.parseInt(name.getPlayerValue(player)) - i));
 
         if (sender instanceof ConsoleCommandSender) {
@@ -140,9 +148,6 @@ public class PlaceholderCommands {
     }
 
     public static boolean isNumeric(String string) {
-
-        System.out.printf("Parsing string: \"%s\"%n", string);
-
         if(string == null || string.equals("")) {
             PlaceholderPlugin.getInstance().getLogger().info("String cannot be parsed, it is null or empty.");
             return false;

@@ -8,15 +8,13 @@ package rip.kaya.placeholders;
 
 import lombok.Getter;
 import org.bukkit.Bukkit;
-import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import rip.kaya.placeholders.command.CommandService;
 import rip.kaya.placeholders.command.Drink;
 import rip.kaya.placeholders.managers.MongoManager;
 import rip.kaya.placeholders.managers.PlaceholderManager;
 
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
+import java.util.concurrent.ForkJoinPool;
 
 @Getter
 public class PlaceholderPlugin extends JavaPlugin {
@@ -27,7 +25,7 @@ public class PlaceholderPlugin extends JavaPlugin {
     private MongoManager mongoManager;
     private PlaceholderManager placeholderManager;
 
-    private Executor mongoThread;
+    private ForkJoinPool mongoPool;
 
     @Override
     public void onLoad() {
@@ -38,7 +36,7 @@ public class PlaceholderPlugin extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        this.mongoThread = Executors.newSingleThreadExecutor();
+        mongoPool = ForkJoinPool.commonPool();
 
         this.mongoManager = new MongoManager(this);
         mongoManager.init();
@@ -50,12 +48,11 @@ public class PlaceholderPlugin extends JavaPlugin {
 
         drink.bind(Placeholder.class).toProvider(new PlaceholderProvider());
         drink.register(new PlaceholderCommands(), "cope", "cp", "customplaceholders", "customplaceholder");
-
         drink.registerCommands();
 
-        if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
-            new PlaceholderRegistration(this).register();
-        }
+        Bukkit.getPluginManager().registerEvents(new PlaceholderListener(this), this);
+
+        new PlaceholderRegistration(this).register();
     }
 
     @Override

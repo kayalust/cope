@@ -50,15 +50,15 @@ public class Placeholder {
 
         document.put("data", dataDocument);
 
-        plugin.getMongoThread().execute(() -> collection.replaceOne(Filters.eq("_id", name), document, new ReplaceOptions().upsert(true)));
-        plugin.getPlaceholderManager().getPlaceholders().add(this);
+        plugin.getMongoPool().execute(() -> collection.replaceOne(Filters.eq("_id", name), document, new ReplaceOptions().upsert(true)));
+        plugin.getPlaceholderManager().getPlaceholders().put(name, this);
     }
 
     public void delete() {
         MongoCollection<Document> collection = plugin.getMongoManager().getData();
 
-        plugin.getMongoThread().execute(() -> collection.findOneAndDelete(Filters.eq("_id", name)));
-        plugin.getPlaceholderManager().getPlaceholders().removeIf(p -> p.getName().equals(name));
+        plugin.getMongoPool().execute(() -> collection.findOneAndDelete(Filters.eq("_id", name)));
+        plugin.getPlaceholderManager().getPlaceholders().remove(name);
     }
 
     public void setValue(Player player, String value) {
@@ -72,7 +72,7 @@ public class Placeholder {
     }
 
     public String getPlayerValue(Player player) {
-        return data.get(player.getUniqueId());
+        return (data.get(player.getUniqueId()) == null ? "0" : data.get(player.getUniqueId()));
     }
 
     public String getToDisplay(Player player) {
