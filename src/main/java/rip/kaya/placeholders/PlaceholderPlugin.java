@@ -25,8 +25,6 @@ public class PlaceholderPlugin extends JavaPlugin {
     private MongoManager mongoManager;
     private PlaceholderManager placeholderManager;
 
-    private ForkJoinPool mongoPool;
-
     @Override
     public void onLoad() {
         instance = this;
@@ -36,8 +34,6 @@ public class PlaceholderPlugin extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        mongoPool = ForkJoinPool.commonPool();
-
         this.mongoManager = new MongoManager(this);
         mongoManager.init();
 
@@ -60,5 +56,9 @@ public class PlaceholderPlugin extends JavaPlugin {
         mongoManager.shutdown();
 
         instance = null;
+    }
+
+    public void runAsync(Runnable runnable) {
+        ForkJoinPool.commonPool().execute(runnable);
     }
 }

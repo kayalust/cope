@@ -6,6 +6,8 @@ package rip.kaya.placeholders;
     วันที่: 1/5/2022
 */
 
+import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
@@ -29,12 +31,25 @@ public class PlaceholderCommands {
     );
 
     @Command(name = "", desc = "The main CustomPlaceholders command.")
-    @Require("cp.admin")
     public void sendHelp(@Sender CommandSender sender) {
-        helpMessage.forEach(sender::sendMessage);
+        if (sender instanceof Player) {
+            Player player = (Player) sender;
+
+            if (player.hasPermission("cp.admin")) {
+                helpMessage.forEach(sender::sendMessage);
+            } else {
+                player.sendMessage(CC.BLANK_LINE);
+                player.sendMessage("&fThis server is currently running &ecope &fv&e" + plugin.getDescription().getVersion());
+                player.sendMessage("&fDeveloped by &ekayalust &f@ &eCrackpixel Development Team");
+                player.sendMessage(CC.BLANK_LINE);
+            }
+        } else {
+            helpMessage.forEach(sender::sendMessage);
+        }
     }
 
     @Command(name = "create", desc = "Creates a new placeholder", usage = "<name>")
+    @Require("cp.admin")
     public void create(@Sender CommandSender sender, String name) {
         Placeholder placeholder = new Placeholder(name);
         placeholder.save();
@@ -76,75 +91,98 @@ public class PlaceholderCommands {
 
     @Command(name = "setplayervalue", desc = "Sets the player value of a placeholder", usage = "<name> <player> <value>")
     @Require("cp.admin")
-    public void setPlayerValue(@Sender CommandSender sender, Placeholder name, Player player, String value) {
-        name.setValue(player, value);
+    public void setPlayerValue(@Sender CommandSender sender, Placeholder placeholder, String playerName, String value) {
+        OfflinePlayer player = Bukkit.getOfflinePlayer(playerName);
 
-        if (sender instanceof ConsoleCommandSender) {
-            sender.sendMessage("Successfully set " + name.getName() + "'s value for " + player.getName() + " to " + value + "!");
+        if (!placeholder.getData().containsKey(player.getUniqueId())) {
+            sender.sendMessage("This player has never joined before!");
             return;
         }
 
-        sender.sendMessage(CC.translate("&aSuccessfully set " + name.getName() + "'s value for " + player.getName() + " to " + value + "!"));
+        placeholder.setValue(player.getUniqueId(), value);
+
+        if (sender instanceof ConsoleCommandSender) {
+            sender.sendMessage("Successfully set " + placeholder.getName() + "'s value for " + player.getName() + " to " + value + "!");
+            return;
+        }
+
+        sender.sendMessage(CC.translate("&aSuccessfully set " + placeholder.getName() + "'s value for " + player.getName() + " to " + value + "!"));
     }
 
     @Command(name = "addplayervalue", aliases = "add", desc = "Adds a value to a player of a placeholder", usage = "<player> <name> <value>")
     @Require("cp.admin")
-    public void addPlayerValue(@Sender CommandSender sender, Player player, Placeholder name, String value) {
+    public void addPlayerValue(@Sender CommandSender sender, String playerName, Placeholder placeholder, String value) {
         if (!isNumeric(value)) {
-            if (sender instanceof ConsoleCommandSender) {
-                sender.sendMessage(CC.translate("&cThat is not a number!"));
-                return;
-            } else {
-                sender.sendMessage(CC.translate("&cThat is not a number!"));
-                return;
-            }
-        }
-
-        int i = Integer.parseInt(value);
-        name.setValue(player, String.valueOf(Integer.parseInt(name.getPlayerValue(player)) + i));
-
-        if (sender instanceof ConsoleCommandSender) {
-            sender.sendMessage("Successfully added " + name.getName() + "'s value for " + player.getName() + " to " + value + "!");
+            sender.sendMessage(CC.translate("That is not a number!"));
             return;
         }
 
-        sender.sendMessage(CC.translate("&aSuccessfully added " + name.getName() + "'s value for " + player.getName() + " to " + value + "!"));
+        int i = Integer.parseInt(value);
+
+        OfflinePlayer player = Bukkit.getOfflinePlayer(playerName);
+
+        if (!placeholder.getData().containsKey(player.getUniqueId())) {
+            sender.sendMessage("This player has never joined before!");
+            return;
+        }
+
+        placeholder.setValue(player.getUniqueId(), String.valueOf(Integer.parseInt(placeholder.getPlayerValue(player.getUniqueId())) + i));
+
+        if (sender instanceof ConsoleCommandSender) {
+            sender.sendMessage("Successfully added " + placeholder.getName() + "'s value for " + player.getName() + " to " + value + "!");
+            return;
+        }
+
+        sender.sendMessage(CC.translate("&aSuccessfully added " + placeholder.getName() + "'s value for " + player.getName() + " to " + value + "!"));
     }
 
     @Command(name = "removeplayervalue", aliases = "remove", desc = "Removes a value to a player of a placeholder", usage = "<player> <name> <value>")
     @Require("cp.admin")
-    public void removePlayerValue(@Sender CommandSender sender, Player player, Placeholder name, String value) {
+    public void removePlayerValue(@Sender CommandSender sender, String playerName, Placeholder placeholder, String value) {
         if (!isNumeric(value)) {
             if (sender instanceof ConsoleCommandSender) {
                 sender.sendMessage("That is not a number!");
-                return;
             } else {
                 sender.sendMessage(CC.translate("&cThat is not a number!"));
-                return;
             }
+            return;
         }
 
         int i = Integer.parseInt(value);
 
-        if ((Integer.parseInt(name.getPlayerValue(player)) - i) <= 0) {
+        OfflinePlayer player = Bukkit.getOfflinePlayer(playerName);
+
+        if (!placeholder.getData().containsKey(player.getUniqueId())) {
+            sender.sendMessage("This player has never joined before!");
+            return;
+        }
+
+        if ((Integer.parseInt(placeholder.getPlayerValue(player.getUniqueId())) - i) <= 0) {
             sender.sendMessage("not setting player balance cuz theyre broke lol cope");
             return;
         }
 
-        name.setValue(player, String.valueOf(Integer.parseInt(name.getPlayerValue(player)) - i));
+        placeholder.setValue(player.getUniqueId(), String.valueOf(Integer.parseInt(placeholder.getPlayerValue(player.getUniqueId())) - i));
 
         if (sender instanceof ConsoleCommandSender) {
-            sender.sendMessage("Successfully removed " + name.getName() + "'s value for " + player.getName() + " to " + value + "!");
+            sender.sendMessage("Successfully removed " + placeholder.getName() + "'s value for " + player.getName() + " to " + value + "!");
             return;
         }
 
-        sender.sendMessage(CC.translate("&aSuccessfully removed " + name.getName() + "'s value for " + player.getName() + " to " + value + "!"));
+        sender.sendMessage(CC.translate("&aSuccessfully removed " + placeholder.getName() + "'s value for " + player.getName() + " to " + value + "!"));
     }
 
     @Command(name = "viewvalue", desc = "Views a player placeholder value", usage = "<name> <player>")
     @Require("cp.admin")
-    public void viewValue(@Sender Player sender, Placeholder name, Player player) {
-        sender.sendMessage(CC.translate("&aValue is " + name.getToDisplay(player)) + " for " + player.getName());
+    public void viewValue(@Sender Player sender, Placeholder placeholder, String playerName) {
+        OfflinePlayer player = Bukkit.getOfflinePlayer(playerName);
+
+        if (!placeholder.getData().containsKey(player.getUniqueId())) {
+            sender.sendMessage("This player has never joined before!");
+            return;
+        }
+
+        sender.sendMessage(CC.translate("&aValue is " + placeholder.getToDisplay(player.getUniqueId())) + " for " + player.getName());
     }
 
     public static boolean isNumeric(String string) {

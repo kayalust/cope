@@ -6,7 +6,6 @@ package rip.kaya.placeholders;
     วันที่: 1/4/2022
 */
 
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Filters;
@@ -17,7 +16,6 @@ import org.bson.Document;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -50,15 +48,25 @@ public class Placeholder {
 
         document.put("data", dataDocument);
 
-        plugin.getMongoPool().execute(() -> collection.replaceOne(Filters.eq("_id", name), document, new ReplaceOptions().upsert(true)));
+        plugin.runAsync(() -> collection.replaceOne(Filters.eq("_id", name), document, new ReplaceOptions().upsert(true)));
         plugin.getPlaceholderManager().getPlaceholders().put(name, this);
     }
 
     public void delete() {
         MongoCollection<Document> collection = plugin.getMongoManager().getData();
 
-        plugin.getMongoPool().execute(() -> collection.findOneAndDelete(Filters.eq("_id", name)));
+        plugin.runAsync(() -> collection.findOneAndDelete(Filters.eq("_id", name)));
         plugin.getPlaceholderManager().getPlaceholders().remove(name);
+    }
+
+    public void setValue(UUID uuid, String value) {
+        if (data.containsKey(uuid)) {
+            data.replace(uuid, value);
+        } else {
+            data.put(uuid, value);
+        }
+
+        this.save();
     }
 
     public void setValue(Player player, String value) {
@@ -75,9 +83,13 @@ public class Placeholder {
         return (data.get(player.getUniqueId()) == null ? "0" : data.get(player.getUniqueId()));
     }
 
-    public String getToDisplay(Player player) {
-        if (data.containsKey(player.getUniqueId())) {
-            return this.getPlayerValue(player);
+    public String getPlayerValue(UUID uuid) {
+        return (data.get(uuid) == null ? defaultValue.toString() : data.get(uuid));
+    }
+
+    public String getToDisplay(UUID uuid) {
+        if (data.containsKey(uuid)) {
+            return this.getPlayerValue(uuid);
         } else {
             return defaultValue.toString();
         }
