@@ -31,10 +31,14 @@ public class PlaceholderCommands {
             "- /cp create <name> - Creates a new placeholder\n",
             "- /cp delete <name> - Deletes an existing placeholder\n",
             "- /cp setdefaultvalue <name> <value> - Sets the default value of a specific placeholder\n",
-            "- /cp setplayervalue <name> <player> <value> - Sets the placeholder value of a specific player\n"
+            "- /cp setplayervalue <player> <name>  <value> - Sets the placeholder value of a specific player\n",
+            "- /cp addplayervalue <player> <name> <amount> - Adds a certain amount of value to a placeholder\n",
+            "- /cp removeplayervalue <player> <name> <amount> - Removes a certain amount of value from a placeholder\n",
+            "- /cp saveall - Saves all placeholder data to the database\n"
+            // "- /cp import - Imports data from the database to the server (This replaces all data!)"
     );
 
-    @Command(name = "", desc = "The main CustomPlaceholders command.")
+    @Command(name = "", desc = "cope with deez nuts bro")
     public void sendHelp(@Sender CommandSender sender) {
         if (sender instanceof Player) {
             Player player = (Player) sender;
@@ -189,7 +193,21 @@ public class PlaceholderCommands {
         sender.sendMessage(CC.translate("&aValue is " + placeholder.getToDisplay(player.getUniqueId())) + " for " + player.getName());
     }
 
-    public static boolean isNumeric(String string) {
+    @Command(name = "saveall", desc = "Saves all placeholders data")
+    @Require("cp.admin")
+    public void saveAll(@Sender CommandSender sender) {
+        plugin.getPlaceholderManager().getPlaceholders().values().forEach(Placeholder::save);
+
+        if (sender instanceof ConsoleCommandSender) {
+            sender.sendMessage("Successfully saved all placeholder data to database!");
+        } else {
+            final Player player = (Player) sender;
+
+            player.sendMessage(CC.translate("&aSuccessfully saved all placeholder data to database!"));
+        }
+    }
+
+    private boolean isNumeric(String string) {
         if(string == null || string.equals("")) {
             PlaceholderPlugin.getInstance().getLogger().info("String cannot be parsed, it is null or empty.");
             return false;
