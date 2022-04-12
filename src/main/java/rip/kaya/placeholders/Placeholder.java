@@ -11,6 +11,7 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.ReplaceOptions;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.bson.Document;
 import org.bukkit.entity.Player;
@@ -20,18 +21,16 @@ import java.util.Map;
 import java.util.UUID;
 
 @Getter @Setter
+@RequiredArgsConstructor
 public class Placeholder {
+
     private final PlaceholderPlugin plugin = PlaceholderPlugin.getInstance();
 
-    private String name;
+    private final String name;
     private Object defaultValue = "defaultValue";
 
-    public Placeholder(String name) {
-        this.name = name;
-    }
-
     /* Playerdata Map */
-    private final HashMap<UUID, String> data = Maps.newHashMap();
+    private final HashMap<UUID, String> data = new HashMap<>();
 
     public void save() {
         MongoCollection<Document> collection = plugin.getMongoManager().getData();
@@ -80,7 +79,7 @@ public class Placeholder {
     }
 
     public String getPlayerValue(Player player) {
-        return (data.get(player.getUniqueId()) == null ? "0" : data.get(player.getUniqueId()));
+        return (data.get(player.getUniqueId()) == null ? defaultValue.toString() : data.get(player.getUniqueId()));
     }
 
     public String getPlayerValue(UUID uuid) {

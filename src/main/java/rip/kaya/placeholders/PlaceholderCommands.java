@@ -6,6 +6,7 @@ package rip.kaya.placeholders;
     วันที่: 1/5/2022
 */
 
+import lombok.RequiredArgsConstructor;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
@@ -19,9 +20,10 @@ import rip.kaya.placeholders.utilities.CC;
 import java.util.Arrays;
 import java.util.List;
 
+@RequiredArgsConstructor
 public class PlaceholderCommands {
 
-    private final PlaceholderPlugin plugin = PlaceholderPlugin.getInstance();
+    private final PlaceholderPlugin plugin;
 
     private final List<String> helpMessage = Arrays.asList(
             "- /cp create <name> - Creates a new placeholder\n",

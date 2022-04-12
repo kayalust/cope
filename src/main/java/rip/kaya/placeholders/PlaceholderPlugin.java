@@ -40,10 +40,10 @@ public class PlaceholderPlugin extends JavaPlugin {
         this.placeholderManager = new PlaceholderManager(this);
         placeholderManager.init();
 
-        CommandService drink = Drink.get(this);
+        final CommandService drink = Drink.get(this);
 
         drink.bind(Placeholder.class).toProvider(new PlaceholderProvider());
-        drink.register(new PlaceholderCommands(), "cope", "cp", "customplaceholders", "customplaceholder");
+        drink.register(new PlaceholderCommands(this), "cope", "cp");
         drink.registerCommands();
 
         Bukkit.getPluginManager().registerEvents(new PlaceholderListener(this), this);

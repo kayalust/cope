@@ -35,15 +35,10 @@ public class MongoManager {
 
         plugin.getLogger().info("Successfully initiated a connection to the database!");
 
-        this.loadCollections();
+        this.data = this.database.getCollection("data");
 
         plugin.getLogger().info("Successfully retrieved the data collection!");
     }
-
-    public void loadCollections() {
-        this.data = this.database.getCollection("data");
-    }
-
     public void shutdown() {
         this.client.close();
     }
