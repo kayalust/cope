@@ -19,6 +19,7 @@ import org.bukkit.entity.Player;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ForkJoinPool;
 
 @Getter @Setter
 @RequiredArgsConstructor
@@ -33,13 +34,13 @@ public class Placeholder {
     private final HashMap<UUID, String> data = new HashMap<>();
 
     public void save() {
-        MongoCollection<Document> collection = plugin.getMongoManager().getData();
-        Document document = new Document();
+        final MongoCollection<Document> collection = plugin.getMongoManager().getData();
+        final Document document = new Document();
 
         document.put("_id", name);
         document.put("defaultValue", defaultValue.toString());
 
-        Document dataDocument = new Document();
+        final Document dataDocument = new Document();
 
         for (Map.Entry<UUID, String> entry : data.entrySet()) {
             dataDocument.put(entry.getKey().toString(), entry.getValue());
@@ -47,14 +48,14 @@ public class Placeholder {
 
         document.put("data", dataDocument);
 
-        plugin.runAsync(() -> collection.replaceOne(Filters.eq("_id", name), document, new ReplaceOptions().upsert(true)));
+        ForkJoinPool.commonPool().execute(() -> collection.replaceOne(Filters.eq("_id", name), document, new ReplaceOptions().upsert(true)));
         plugin.getPlaceholderManager().getPlaceholders().put(name, this);
     }
 
     public void delete() {
-        MongoCollection<Document> collection = plugin.getMongoManager().getData();
+        final MongoCollection<Document> collection = plugin.getMongoManager().getData();
 
-        plugin.runAsync(() -> collection.findOneAndDelete(Filters.eq("_id", name)));
+        ForkJoinPool.commonPool().execute(() -> collection.findOneAndDelete(Filters.eq("_id", name)));
         plugin.getPlaceholderManager().getPlaceholders().remove(name);
     }
 

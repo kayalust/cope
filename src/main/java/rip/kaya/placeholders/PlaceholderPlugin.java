@@ -9,12 +9,14 @@ package rip.kaya.placeholders;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
-import rip.kaya.placeholders.command.CommandService;
-import rip.kaya.placeholders.command.Drink;
+import rip.kaya.placeholders.command.PlaceholderCommands;
+import rip.kaya.placeholders.command.api.CommandService;
+import rip.kaya.placeholders.command.api.Drink;
+import rip.kaya.placeholders.listener.PlaceholderListener;
 import rip.kaya.placeholders.managers.MongoManager;
 import rip.kaya.placeholders.managers.PlaceholderManager;
-
-import java.util.concurrent.ForkJoinPool;
+import rip.kaya.placeholders.provider.PlaceholderParamProvider;
+import rip.kaya.placeholders.provider.PlaceholderProvider;
 
 @Getter
 public class PlaceholderPlugin extends JavaPlugin {
@@ -29,6 +31,7 @@ public class PlaceholderPlugin extends JavaPlugin {
     public void onLoad() {
         instance = this;
 
+        getConfig().options().copyDefaults();
         this.saveDefaultConfig();
     }
 
@@ -42,23 +45,20 @@ public class PlaceholderPlugin extends JavaPlugin {
 
         final CommandService drink = Drink.get(this);
 
-        drink.bind(Placeholder.class).toProvider(new PlaceholderProvider());
+        drink.bind(Placeholder.class).toProvider(new PlaceholderParamProvider());
         drink.register(new PlaceholderCommands(this), "cope", "cp");
         drink.registerCommands();
 
         Bukkit.getPluginManager().registerEvents(new PlaceholderListener(this), this);
 
-        new PlaceholderRegistration(this).register();
+        new PlaceholderProvider(this).register();
     }
 
     @Override
     public void onDisable() {
+        placeholderManager.getPlaceholders().values().forEach(Placeholder::save);
         mongoManager.shutdown();
 
         instance = null;
-    }
-
-    public void runAsync(Runnable runnable) {
-        ForkJoinPool.commonPool().execute(runnable);
     }
 }
